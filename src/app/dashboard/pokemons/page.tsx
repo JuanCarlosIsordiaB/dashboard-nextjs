@@ -1,4 +1,4 @@
-import { PokemonGrid, PokemonsResponse, SimplePokemon } from "@/app/pokemons";
+import { PokemonGrid, PokemonsResponse, SimplePokemon } from "@/pokemons";
 
 
 const getPokemons = async (
@@ -13,6 +13,8 @@ const getPokemons = async (
     id: pokemon.url.split("/").at(-2)!,
     name: pokemon.name,
   }));
+
+  //throw new Error("Error fetching pokemons");
 
   return pokemons;
 };
