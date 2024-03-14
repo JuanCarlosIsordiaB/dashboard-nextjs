@@ -1,42 +1,39 @@
-import { Pokemon } from "@/pokemons";
+import { Pokemon, PokemonsResponse } from "@/pokemons";
 import { Metadata } from "next";
 import { useEffect } from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
 interface Props {
-  params: { id: string };
+  params: { name: string };
 }
 
 // Build time
-export async function generateStaticParams(){
+export async function generateStaticParams() {
+  const data:PokemonsResponse = await fetch(
+    `https://pokeapi.co/api/v2/pokemon?limit=151`
+  ).then((res) => res.json());
 
-  const static151Pokemons = Array.from({length: 151}).map((v, index) => `${index + 1}`);
+  const static151Pokemons = data.results.map((pokemon) => ({
+    name: pokemon.name,
+  }));
 
-  return static151Pokemons.map(id =>  ({id: id}));
-
+  return static151Pokemons.map(({name}) => ({ name: name }));
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  try {
-    const { id, name } = await getPokemon(params.id);
-    return {
-      title: `Pokemon #${id} | ${name}`,
-    };
-  } catch (error) {
-    return {
-      title: "Page Not Found",
-    };
-  }
-}
 
-const getPokemon = async (id: string): Promise<Pokemon> => {
+export const metadata = {
+ title: '151 Pokemons',
+ description: '151 Pokemons',
+};
+
+const getPokemon = async (name: string): Promise<Pokemon> => {
   try {
-    const pokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
+    const pokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`, {
       cache: "force-cache", //TODO: remove this in the future
       next: {
         revalidate: 60 * 60 * 24,
-      }
+      },
     }).then((res) => res.json());
 
     console.log(pokemon.name);
@@ -48,7 +45,7 @@ const getPokemon = async (id: string): Promise<Pokemon> => {
 };
 
 export default async function PokemonPage({ params }: Props) {
-  const pokemon = await getPokemon(params.id);
+  const pokemon = await getPokemon(params.name);
 
   return (
     <div className="flex mt-5 flex-col items-center text-slate-800">
