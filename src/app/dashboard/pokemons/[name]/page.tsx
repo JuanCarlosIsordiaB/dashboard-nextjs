@@ -21,7 +21,6 @@ export async function generateStaticParams() {
   return static151Pokemons.map(({name}) => ({ name: name }));
 }
 
-
 export const metadata = {
  title: '151 Pokemons',
  description: '151 Pokemons',
