@@ -6,9 +6,7 @@ interface PokemonsState {
 }
 
 const initialState: PokemonsState = {
-  "1": { id: "1", name: "bulbasaur" },
-  '2':{id:'2', name: 'venusaur'},
-  '3' : {id:'3', name: 'ivysaur'}
+  
 };
 
 const pokemonsSlice = createSlice({
@@ -27,7 +25,8 @@ const pokemonsSlice = createSlice({
       //Si no existe, agrega al pokemon
       state[id] = pokemon;
 
-      console.log(initialState);
+      localStorage.setItem("favorites-pokemons", JSON.stringify(state));
+
     },
   },
 });
